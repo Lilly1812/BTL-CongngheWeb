@@ -38,11 +38,6 @@ function SideBar() {
           </Link>
         </li>
         <li>
-          <Link to="/chitiet" className="flex items-center gap-3 text-gray-700 hover:text-blue-600 transition">
-            <FiBox size={18} /> Chi tiết sản phẩm
-          </Link>
-        </li>
-        <li>
           <Link to="/khachhang" className="flex items-center gap-3 text-gray-700 hover:text-blue-600 transition">
             <FiBox size={18} /> Khách hàng
           </Link>
