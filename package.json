@@ -1,0 +1,31 @@
+{
+  "name": "btl-congngheweb",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon backend/server.js"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lilly1812/BTL-CongngheWeb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lilly1812/BTL-CongngheWeb/issues"
+  },
+  "homepage": "https://github.com/Lilly1812/BTL-CongngheWeb#readme",
+  "description": "",
+  "dependencies": {
+    "@faker-js/faker": "^9.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.13.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
