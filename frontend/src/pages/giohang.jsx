@@ -10,8 +10,13 @@ import { useUserStore } from "../store/user";
 function GioHang() {
   const navigate = useNavigate();
   const [selectedItems, setSelectedItems] = useState([]);
-  const quantity = 1; // Giá trị mặc định cho số lượng sản phẩm
-  const { cart, fetchCart } = useCartStore();
+
+  const {
+    cart,
+    fetchCart,
+    updateCartItemQuantity,
+    removeSelected,
+  } = useCartStore();
   const { user } = useUserStore();
 
   useEffect(() => {
@@ -24,24 +29,40 @@ function GioHang() {
     setSelectedItems(e.target.checked ? cart.map((item) => item.id) : []);
   };
 
-  const toggleSelectItem = (id) => {
+  const toggleSelectItem = (itemId) => {
     setSelectedItems((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(itemId)
+        ? prev.filter((id) => id !== itemId)
+        : [...prev, itemId]
     );
   };
 
-  const removeSelectedItems = () => {
-    // Giả sử chỉ xử lý frontend - nếu có API thì sẽ gọi từ store
+  const removeSelectedItems = async () => {
+    if (!user?._id || selectedItems.length === 0) return;
+  
+    // Lấy đúng productId của các item được chọn
+    const productIds = selectedItems.map((itemId) => {
+      const item  = cart.find((i) => i.id === itemId);
+      return item?.productId;
+    }).filter(Boolean); // loại bỏ null/undefined
+  
+    await removeSelected({ userId: user._id, productIds });
+  
+    await fetchCart(user._id);
     toast.success("Đã xóa sản phẩm đã chọn!");
     setSelectedItems([]);
   };
+  
 
-  const updateQuantity = (id, quantity) => {
-    useCartStore.setState((state) => ({
-      cart: state.cart.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
-      ),
-    }));
+  const handleUpdateQuantity = async (itemId, newQuantity) => {
+    const item = cart.find((i) => i.id === itemId);
+    if (!item || !user?._id || newQuantity < 1) return;
+
+    await updateCartItemQuantity({
+      userId: user._id,
+      productId: item.productId,
+      quantity: newQuantity,
+    });
   };
 
   return (
@@ -93,7 +114,7 @@ function GioHang() {
               item={item}
               isSelected={selectedItems.includes(item.id)}
               toggleSelectItem={toggleSelectItem}
-              updateQuantity={updateQuantity}
+              onUpdateQuantity={handleUpdateQuantity}
             />
           ))}
         </div>
@@ -111,18 +132,22 @@ function GioHang() {
   );
 }
 
-function CardCart({ item, isSelected, toggleSelectItem, updateQuantity }) {
+function CardCart({ item, isSelected, toggleSelectItem, onUpdateQuantity }) {
   return (
     <div className="flex items-center gap-4 bg-gray-100 p-4 rounded-xl shadow-md border border-gray-200">
       <input
         type="checkbox"
-        className="w-6 h-6 "
+        className="w-6 h-6"
         checked={isSelected}
         onChange={() => toggleSelectItem(item.id)}
       />
       <div className="w-20 h-20 bg-white flex items-center justify-center rounded-xl shadow-sm border border-gray-300 overflow-hidden">
-  <img src={item.image} alt={item.title} className="object-cover w-full h-full" />
-</div>
+        <img
+          src={item.image}
+          alt={item.title}
+          className="object-cover w-full h-full"
+        />
+      </div>
 
       <div className="flex-1">
         <div className="text-lg font-semibold text-gray-800">{item.title}</div>
@@ -130,7 +155,7 @@ function CardCart({ item, isSelected, toggleSelectItem, updateQuantity }) {
         <div className="flex items-center gap-2 mt-2">
           <button
             className="px-2 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
-            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+            onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
           >
             -
           </button>
@@ -139,7 +164,7 @@ function CardCart({ item, isSelected, toggleSelectItem, updateQuantity }) {
           </span>
           <button
             className="px-2 py-1 bg-gray-200 rounded-md hover:bg-gray-300"
-            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+            onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
           >
             +
           </button>
