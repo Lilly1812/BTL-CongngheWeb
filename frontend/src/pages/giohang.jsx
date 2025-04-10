@@ -11,12 +11,8 @@ function GioHang() {
   const navigate = useNavigate();
   const [selectedItems, setSelectedItems] = useState([]);
 
-  const {
-    cart,
-    fetchCart,
-    updateCartItemQuantity,
-    removeSelected,
-  } = useCartStore();
+  const { cart, fetchCart, updateCartItemQuantity, removeSelected } =
+    useCartStore();
   const { user } = useUserStore();
 
   useEffect(() => {
@@ -39,20 +35,20 @@ function GioHang() {
 
   const removeSelectedItems = async () => {
     if (!user?._id || selectedItems.length === 0) return;
-  
-    // Lấy đúng productId của các item được chọn
-    const productIds = selectedItems.map((itemId) => {
-      const item  = cart.find((i) => i.id === itemId);
-      return item?.productId;
-    }).filter(Boolean); // loại bỏ null/undefined
-  
+
+    const productIds = selectedItems
+      .map((itemId) => {
+        const item = cart.find((i) => i.id === itemId);
+        return item?.productId;
+      })
+      .filter(Boolean);
+
     await removeSelected({ userId: user._id, productIds });
-  
+
     await fetchCart(user._id);
     toast.success("Đã xóa sản phẩm đã chọn!");
     setSelectedItems([]);
   };
-  
 
   const handleUpdateQuantity = async (itemId, newQuantity) => {
     const item = cart.find((i) => i.id === itemId);
@@ -64,6 +60,9 @@ function GioHang() {
       quantity: newQuantity,
     });
   };
+  const selectedItemsTotal = cart
+  .filter((item) => selectedItems.includes(item.id))
+  .reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <div className="w-full p-4 bg-white rounded-2xl shadow-xl border border-gray-200">
@@ -120,14 +119,21 @@ function GioHang() {
         </div>
       )}
 
-      <TotalBar
-        total={cart.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0
-        )}
-        navigate={navigate}
-        hasItems={cart.length > 0}
-      />
+<TotalBar
+  total={selectedItemsTotal}
+  navigate={(route) =>
+    navigate(route, {
+      state: {
+        selectedItems: cart.filter((item) =>
+          selectedItems.includes(item.id)
+        ),
+        total: selectedItemsTotal,
+      },
+    })
+  }
+  hasItems={selectedItems.length > 0}
+/>
+
     </div>
   );
 }
@@ -185,7 +191,7 @@ function TotalBar({ total, navigate, hasItems }) {
       </div>
       <button
         className="bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600 transition-all"
-        onClick={() => navigate("/thanhtoan")}
+        onClick={() => navigate(hasItems ? "/thanhtoan" : "/products")}
       >
         {hasItems ? "Mua hàng" : "Tiếp tục mua sắm"}
       </button>

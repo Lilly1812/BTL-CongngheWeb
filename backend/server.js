@@ -5,6 +5,8 @@ import { connectDB } from "./config/db.js";
 import productRoutes from "./routes/product.route.js";
 import cartRoutes from "./routes/cart.route.js";
 import userRoutes from "./routes/user.route.js"; 
+import orderRoutes from "./routes/order.route.js";
+import mongoose from "mongoose";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -23,6 +25,7 @@ connectDB();
 app.use("/api/products", productRoutes);
 app.use("/api/carts", cartRoutes);
 app.use("/api/users", userRoutes); 
+app.use("/api/orders", orderRoutes);
 
 app.listen(PORT, () => {
     console.log("🚀 Server started at http://localhost:" + PORT);
