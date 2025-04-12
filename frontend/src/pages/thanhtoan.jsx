@@ -64,7 +64,7 @@ function ThanhToan() {
       Swal.fire("Thiếu thông tin", "Vui lòng điền đầy đủ địa chỉ giao hàng!", "warning");
       return;
     }
-
+  
     const result = await Swal.fire({
       title: "Xác nhận thanh toán?",
       text: "Bạn có chắc muốn tạo đơn hàng với thông tin đã nhập?",
@@ -73,10 +73,9 @@ function ThanhToan() {
       confirmButtonText: "Xác nhận",
       cancelButtonText: "Hủy",
     });
-
+  
     if (result.isConfirmed) {
       const newOrder = {
-        userId: user._id,
         items: selectedItems,
         total: finalTotal,
         shippingAddress: {
@@ -88,10 +87,11 @@ function ThanhToan() {
         paymentMethod,
         status: paymentMethod === "COD" ? "Chờ xác nhận" : "Chờ chuyển khoản",
       };
-
-      const response = await createOrder(newOrder);
+  
+      const token = localStorage.getItem("token"); // hoặc từ auth store
+      const response = await createOrder(newOrder, token);
       setOrderId(response.orderId);
-
+  
       if (paymentMethod === "Chuyển khoản ngân hàng") {
         Swal.fire({
           title: "Quét mã để thanh toán",
@@ -117,6 +117,7 @@ function ThanhToan() {
       }
     }
   };
+  
 
   return (
     <div className="w-full geo-regular bg-gray-100 p-4 rounded-xl">

@@ -8,13 +8,10 @@ function DonHang() {
   const [selectedStatus, setSelectedStatus] = useState("Chờ xác nhận");
   const { orders, fetchOrders, cancelOrder } = useOrderStore();
   const { user } = useUserStore();
-
   useEffect(() => {
-    if (user?._id) {
-      fetchOrders(user._id);
-    }
-  }, [user?._id]);
-
+    fetchOrders();
+  }, [user, fetchOrders]);
+  
   const filteredOrders =
     orders?.filter((order) => order.status === selectedStatus) || [];
 

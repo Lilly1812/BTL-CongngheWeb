@@ -16,11 +16,8 @@ function GioHang() {
   const { user } = useUserStore();
 
   useEffect(() => {
-    if (user?._id) {
-      fetchCart(user._id);
-    }
+    fetchCart(); // không truyền user._id
   }, [fetchCart, user]);
-
   const toggleSelectAll = (e) => {
     setSelectedItems(e.target.checked ? cart.map((item) => item.id) : []);
   };
@@ -34,35 +31,36 @@ function GioHang() {
   };
 
   const removeSelectedItems = async () => {
-    if (!user?._id || selectedItems.length === 0) return;
-
+    if (selectedItems.length === 0) return;
+  
     const productIds = selectedItems
       .map((itemId) => {
         const item = cart.find((i) => i.id === itemId);
         return item?.productId;
       })
       .filter(Boolean);
-
-    await removeSelected({ userId: user._id, productIds });
-
-    await fetchCart(user._id);
+  
+    await removeSelected({ productIds }); // ✅ sửa tại đây
     toast.success("Đã xóa sản phẩm đã chọn!");
     setSelectedItems([]);
   };
+  
+  
 
   const handleUpdateQuantity = async (itemId, newQuantity) => {
     const item = cart.find((i) => i.id === itemId);
-    if (!item || !user?._id || newQuantity < 1) return;
-
+    if (!item || newQuantity < 1) return;
+  
     await updateCartItemQuantity({
-      userId: user._id,
       productId: item.productId,
       quantity: newQuantity,
     });
   };
+  
+
   const selectedItemsTotal = cart
-  .filter((item) => selectedItems.includes(item.id))
-  .reduce((sum, item) => sum + item.price * item.quantity, 0);
+    .filter((item) => selectedItems.includes(item.id))
+    .reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <div className="w-full p-4 bg-white rounded-2xl shadow-xl border border-gray-200">
@@ -119,21 +117,20 @@ function GioHang() {
         </div>
       )}
 
-<TotalBar
-  total={selectedItemsTotal}
-  navigate={(route) =>
-    navigate(route, {
-      state: {
-        selectedItems: cart.filter((item) =>
-          selectedItems.includes(item.id)
-        ),
-        total: selectedItemsTotal,
-      },
-    })
-  }
-  hasItems={selectedItems.length > 0}
-/>
-
+      <TotalBar
+        total={selectedItemsTotal}
+        navigate={(route) =>
+          navigate(route, {
+            state: {
+              selectedItems: cart.filter((item) =>
+                selectedItems.includes(item.id)
+              ),
+              total: selectedItemsTotal,
+            },
+          })
+        }
+        hasItems={selectedItems.length > 0}
+      />
     </div>
   );
 }

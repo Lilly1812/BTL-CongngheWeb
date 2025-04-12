@@ -56,10 +56,7 @@ function SideBar() {
         {showAccountOptions && (
           <ul className="absolute left-0 mt-2 w-full bg-white shadow-lg rounded-lg border">
             <li>
-              <Link to="/dangky" className="block px-4 py-2 hover:bg-gray-100">Đăng ký</Link>
-            </li>
-            <li>
-              <Link to="/dangnhap" className="block px-4 py-2 hover:bg-gray-100">Đăng nhập</Link>
+              <Link to="/thongtintaikhoan" className="w-full text-left px-4 py-2 hover:bg-gray-100">Thông tin tài khoản</Link>
             </li>
             <li>
               <button className="w-full text-left px-4 py-2 hover:bg-gray-100">Đăng xuất</button>
