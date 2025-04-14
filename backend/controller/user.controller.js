@@ -87,4 +87,30 @@ export const getAllUsers = async (req, res) => {
         console.error("❌ Error in Get All Users:", error.message);
         res.status(500).json({ success: false, message: "Server Error" });
     }
-}
+};
+export const updateRole = async (req, res) => { 
+    const { userId, newRole } = req.body;
+  
+    // Kiểm tra giá trị newRole hợp lệ
+  const validRoles = ['customer', 'admin'];
+  if (!validRoles.includes(newRole)) {
+    return res.status(400).json({ success: false, message: "Vai trò không hợp lệ." });
+  }
+
+  try {
+    // Kiểm tra xem người dùng có tồn tại không
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "Người dùng không tồn tại." });
+    }
+
+    // Cập nhật vai trò người dùng
+    user.role = newRole;
+    await user.save();
+
+    res.status(200).json({ success: true, message: "Cập nhật vai trò thành công.", data: user });
+  } catch (error) {
+    console.error("❌ Error in Update Role:", error.message);
+    res.status(500).json({ success: false, message: "Lỗi server." });
+  }
+};

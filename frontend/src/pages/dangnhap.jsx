@@ -70,7 +70,7 @@ export default function DangNhap() {
         </form>
         <p className="mt-4 text-sm text-center">
           Chưa có tài khoản?{" "}
-          <a href="/dangky" className="text-blue-600 hover:underline">
+          <a href="/" className="text-blue-600 hover:underline">
             Đăng ký
           </a>
         </p>

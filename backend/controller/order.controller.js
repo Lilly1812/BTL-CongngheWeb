@@ -22,20 +22,27 @@ export const getAllOrdersForAdmin = async (req, res) => {
 // 🧾 Lấy đơn hàng của người dùng hiện tại
 export const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.user._id })
-      .populate("items.product")
+    const user = req.user; // phải là req.user do middleware auth gán vào
+
+    // Nếu là customer => chỉ được xem đơn hàng của chính mình
+    // Nếu là admin => có thể xem đơn hàng của bất kỳ user nào qua query userId
+    const targetUserId = user.role === 'customer' ? user._id : req.query.userId || user._id;
+
+    const orders = await Order.find({ userId: targetUserId })
+      .populate("items.productId")
       .sort({ createdAt: -1 });
 
-    if (!orders.length) {
+    if (!orders || orders.length === 0) {
       return res.status(404).json({ message: "Không tìm thấy đơn hàng." });
     }
 
-    res.status(200).json(orders);
+    res.status(200).json({ success: true, data: orders });
   } catch (error) {
     console.error("❌ Lỗi khi lấy đơn hàng:", error.message);
     res.status(500).json({ message: "Lỗi máy chủ." });
   }
 };
+
 
 // 📄 Chi tiết đơn hàng theo ID
 export const getOrderById = async (req, res) => {

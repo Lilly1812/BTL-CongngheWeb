@@ -82,5 +82,22 @@ export const useUserStore = create((set) => ({
       };
     }
   },
+  updateRole: async (userId, role) => {
+    try {
+      const res = await axios.post("http://localhost:5000/api/users/update-role", {
+        userId,
+        role,
+      });
+      return {
+        success: true,
+        message: res.data.message,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "Không thể cập nhật quyền",
+      };
+    }
+  },
   
 }));

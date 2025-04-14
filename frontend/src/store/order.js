@@ -9,13 +9,14 @@ export const useOrderStore = create((set, get) => ({
   fetchOrders: async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/orders/get", {
+      console.log("token", token);
+      const res = await axios.get("http://localhost:5000/api/orders/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-  
-      const ordersData = res.data;
+      console.log("orders from API", res.data);
+      const ordersData = res.data?.data;
   
       // Nếu không có đơn hàng hoặc định dạng không đúng
       if (!ordersData || !Array.isArray(ordersData)) {
@@ -29,11 +30,11 @@ export const useOrderStore = create((set, get) => ({
         createdAt: order.createdAt,
         totalPrice: order.totalPrice,
         items: order.items.map((item) => ({
-          title: item.product?.name,
-          price: item.product?.price,
+          title: item.productId.name,
+          price: item.productId.price,
           quantity: item.quantity,
-          image: item.product?.image,
-          productId: item.product?._id,
+          image: item.productId.image,
+          productId: item.productId._id,
         })),
       }));
   

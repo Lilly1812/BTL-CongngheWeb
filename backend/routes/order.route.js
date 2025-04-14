@@ -13,7 +13,7 @@ import { protect } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router.get("/admin/all", protect, getAllOrdersForAdmin); // chỉ admin mới nên được dùng
-router.get("/get", protect, getAllOrders); // user tự lấy order của mình
+router.get("/me", protect, getAllOrders); // user tự lấy order của mình
 router.get("/detail/:orderId", protect, getOrderById);
 router.post("/", protect, createOrder);
 router.patch("/status/:orderId", protect, updateOrderStatus);

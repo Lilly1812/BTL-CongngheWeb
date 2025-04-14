@@ -6,6 +6,7 @@ export const useCartStore = create((set, get) => ({
   fetchCart: async () => {
     try {
       const token = localStorage.getItem("token");
+      console.log("token", token);
       const res = await axios.get("http://localhost:5000/api/carts/me", {
         headers: {
           Authorization: `Bearer ${token}`,
