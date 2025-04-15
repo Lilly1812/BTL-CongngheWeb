@@ -106,14 +106,14 @@ function ThanhToan() {
             </div>
           `,
           confirmButtonText: "Hoàn thành",
-        }).then(() => navigate("/products"));
+        }).then(() => navigate("/"));
       } else {
         Swal.fire({
           title: "Đặt hàng thành công",
           text: "Đơn hàng của bạn đã được tạo. Cảm ơn bạn!",
           icon: "success",
           confirmButtonText: "Xem sản phẩm",
-        }).then(() => navigate("/products"));
+        }).then(() => navigate("/"));
       }
     }
   };

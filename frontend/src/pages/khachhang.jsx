@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Menu } from "@headlessui/react";
 import { useUserStore } from "../store/user.js"; // Đường dẫn đến file zustand của bạn
 
 function KhachHang() {
@@ -11,8 +10,14 @@ function KhachHang() {
       const res = await fetchAllUsers();
       if (res.success) {
         setUsers(res.data);
+
+        // Gọi API để tăng số lần truy cập và cập nhật trạng thái hoạt động cho mỗi người dùng
+        res.data.forEach((user) => {
+          
+        });
       }
     };
+
     fetchUsers();
   }, [fetchAllUsers]);
 
@@ -36,10 +41,9 @@ function KhachHang() {
                 <td className="p-3 border-b">{user.email}</td>
                 <td className="p-3 border-b">{new Date(user.createdAt).toLocaleDateString("vi-VN")}</td>
                 <td className="p-3 border-b">{user.loginCount || 0}</td>
-                <td className={`p-3 border-b ${user.loginCount > 0 ? "text-green-600" : "text-red-600"}`}>
-                  {user.loginCount > 0 ? "Active" : "Not Active"}
+                <td className={`p-3 border-b ${user.isActive ? "text-green-600" : "text-red-600"}`}>
+                  {user.isActive ? "Active" : "Not Active"}
                 </td>
-                
               </tr>
             ))}
           </tbody>

@@ -4,7 +4,6 @@ import {
   getAllOrders,
   getOrderById,
   createOrder,
-  updateOrderStatus,
   cancelOrder,
   changeOrderStatus,
 } from "../controller/order.controller.js";
@@ -16,7 +15,6 @@ router.get("/admin/all", protect, getAllOrdersForAdmin); // chỉ admin mới n�
 router.get("/me", protect, getAllOrders); // user tự lấy order của mình
 router.get("/detail/:orderId", protect, getOrderById);
 router.post("/", protect, createOrder);
-router.patch("/status/:orderId", protect, updateOrderStatus);
 router.patch("/cancel/:orderId", protect, cancelOrder);
 router.patch("/change-status/:orderId", protect, changeOrderStatus);
 

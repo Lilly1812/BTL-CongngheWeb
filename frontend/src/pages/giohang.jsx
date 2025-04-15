@@ -188,7 +188,7 @@ function TotalBar({ total, navigate, hasItems }) {
       </div>
       <button
         className="bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600 transition-all"
-        onClick={() => navigate(hasItems ? "/thanhtoan" : "/products")}
+        onClick={() => navigate(hasItems ? "/thanhtoan" : "/")}
       >
         {hasItems ? "Mua hàng" : "Tiếp tục mua sắm"}
       </button>

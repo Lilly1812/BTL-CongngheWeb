@@ -1,4 +1,3 @@
-// src/pages/dangnhap.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../store/user";
@@ -11,6 +10,7 @@ export default function DangNhap() {
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,15 +18,31 @@ export default function DangNhap() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Basic form validation
+    if (!form.email || !form.password) {
+      setError("Vui lòng nhập email và mật khẩu.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");  // Clear previous error
+
     const res = await login(form.email, form.password);
 
     if (res.success) {
       toast.success("Đăng nhập thành công!");
-      navigate("/products");
+      if (res.user?.role === "admin") {
+        navigate("/donhangad");
+      } else {
+        navigate("/");
+      }
     } else {
       toast.error(res.message || "Đăng nhập thất bại.");
       setError(res.message);
     }
+    
+    setLoading(false);
   };
 
   return (
@@ -63,14 +79,15 @@ export default function DangNhap() {
           />
           <button
             type="submit"
-            className="w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700"
+            className={`w-full py-2 rounded ${loading ? "bg-gray-400" : "bg-gray-800 text-white hover:bg-gray-700"}`}
+            disabled={loading}
           >
-            Đăng nhập
+            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
           </button>
         </form>
         <p className="mt-4 text-sm text-center">
           Chưa có tài khoản?{" "}
-          <a href="/" className="text-blue-600 hover:underline">
+          <a href="/dangky" className="text-blue-600 hover:underline">
             Đăng ký
           </a>
         </p>

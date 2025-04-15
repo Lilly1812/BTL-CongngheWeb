@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom"; // Correct import
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SideBar from "./components/sidebar";
@@ -12,15 +12,17 @@ import DangKy from "./pages/dangky";
 import DangNhap from "./pages/dangnhap";
 
 function App() {
+  
+
   return (
     <Router>
       <ToastContainer />
       <Routes>
-        {/* Layout đặc biệt cho trang đăng ký & đăng nhập (không có sidebar) */}
-        <Route path="/" element={<DangKy />} />
+        {/* Layout for Register and Login (without sidebar) */}
+        <Route path="/dangky" element={<DangKy />} />
         <Route path="/dangnhap" element={<DangNhap />} />
 
-        {/* Layout chính (có sidebar) */}
+        {/* Main Layout (with sidebar) */}
         <Route
           path="/*"
           element={
@@ -28,7 +30,7 @@ function App() {
               <SideBar />
               <div className="ml-[15%] w-[85%] p-4 pl-0">
                 <Routes>
-                  <Route path="/products" element={<SanPham />} />
+                  <Route path="/" element={<SanPham />} />
                   <Route path="/giohang" element={<GioHang />} />
                   <Route path="/donhang" element={<DonHang />} />
                   <Route path="/donhangad" element={<DonHangAd />} />

@@ -9,8 +9,9 @@ export const getAllOrdersForAdmin = async (req, res) => {
     }
 
     const orders = await Order.find()
-      .populate("items.productId")
-      .sort({ createdAt: -1 });
+  .populate("userId", "name") // ✅ lấy tên người dùng
+  .sort({ createdAt: -1 });
+
 
     res.status(200).json(orders);
   } catch (error) {
@@ -53,7 +54,7 @@ export const getOrderById = async (req, res) => {
       return res.status(400).json({ message: "ID đơn hàng không hợp lệ." });
     }
 
-    const order = await Order.findById(orderId).populate("items.productId");
+    const order = await Order.findById(orderId).populate("items.productId").populate("userId");;
 
     if (!order) {
       return res.status(404).json({ message: "Không tìm thấy đơn hàng." });

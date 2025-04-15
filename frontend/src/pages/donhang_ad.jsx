@@ -11,7 +11,7 @@ function DonHangAd() {
 
   useEffect(() => {
     fetchAllOrdersForAdmin();
-  }, );
+  }, []); // ✅ chỉ chạy 1 lần khi component mount
 
   const filteredOrders = orders.filter((order) => {
     if (filter === "confirm") return order.status === "Chờ xác nhận";
@@ -53,7 +53,6 @@ function DonHangAd() {
           <thead>
             <tr className="bg-gray-200">
               <th className="border border-gray-300 p-2">Mã đơn hàng</th>
-              <th className="border border-gray-300 p-2">Mã khách hàng</th>
               <th className="border border-gray-300 p-2">Tổng giá trị</th>
               <th className="border border-gray-300 p-2">
                 Tình trạng đơn hàng
@@ -73,7 +72,6 @@ function DonHangAd() {
                 >
                   {order.orderId}
                 </td>
-                <td className="border border-gray-300 p-2">{order.userId}</td>
                 <td className="border border-gray-300 p-2 text-right">
                   {order.total.toLocaleString()} VND
                 </td>
@@ -153,8 +151,10 @@ function DonHangAd() {
               <strong>Mã đơn:</strong> {selectedOrder.orderId}
             </p>
             <p>
-              <strong>Khách hàng:</strong> {selectedOrder.userId}
+              <strong>Khách hàng:</strong>{" "}
+              {selectedOrder.userId?.name || "Không rõ"}
             </p>
+
             <p>
               <strong>Trạng thái:</strong> {selectedOrder.status}
             </p>

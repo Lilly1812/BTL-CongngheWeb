@@ -9,7 +9,6 @@ export const useOrderStore = create((set, get) => ({
   fetchOrders: async () => {
     try {
       const token = localStorage.getItem("token");
-      console.log("token", token);
       const res = await axios.get("http://localhost:5000/api/orders/me", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -47,7 +46,8 @@ export const useOrderStore = create((set, get) => ({
   
 
   // Admin: lấy tất cả đơn hàng
-  fetchAllOrdersForAdmin: async (token) => {
+  fetchAllOrdersForAdmin: async () => {
+    const token = localStorage.getItem("token");
     try {
       const res = await axios.get(`http://localhost:5000/api/orders/admin/all`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -85,22 +85,6 @@ export const useOrderStore = create((set, get) => ({
     }
   },
 
-  // Cập nhật trạng thái đơn hàng
-  updateOrderStatus: async ({ orderId, status, token }) => {
-    try {
-      const res = await axios.put(
-        `http://localhost:5000/api/orders/status/${orderId}`,
-        { status },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      return res.data;
-    } catch (err) {
-      console.error("Lỗi khi cập nhật trạng thái:", err);
-      throw err;
-    }
-  },
 
   // Hủy đơn hàng
   cancelOrder: async (orderId, token) => {
@@ -120,7 +104,8 @@ export const useOrderStore = create((set, get) => ({
   },
 
   // Thay đổi trạng thái đơn hàng (admin)
-  changeOrderStatus: async ({ orderId, targetStatus, token }) => {
+  changeOrderStatus: async ({ orderId, targetStatus}) => {
+    const token = localStorage.getItem("token");
     try {
       const res = await axios.patch(
         `http://localhost:5000/api/orders/change-status/${orderId}`,
@@ -136,6 +121,4 @@ export const useOrderStore = create((set, get) => ({
     }
   },
 
-  // Reset selected
-  clearSelectedOrder: () => set({ selectedOrder: null }),
 }));

@@ -5,7 +5,6 @@ import User from "../model/user.model.js"; // điều chỉnh đường dẫn n�
 export const protect = async (req, res, next) => {
   let token;
 
-  console.log("👉 Request headers:", req.headers); // Để chắc chắn token được gửi chính xác
 
   if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
     try {
