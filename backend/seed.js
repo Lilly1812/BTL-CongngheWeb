@@ -86,10 +86,10 @@ const getRandomImageFromFolder = (typeFolder) => {
   const randomFile = files[Math.floor(Math.random() * files.length)];
 
   // Lấy BASE_URL từ biến môi trường và sử dụng nếu trên production
-  const baseURL = process.env.NODE_ENV === "production" ? process.env.BASE_URL : "http://localhost:5000";
+  const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
   
   // ❗ Thay đường dẫn tương đối bằng URL đầy đủ
-  const imagePath = `${baseURL}/images/${typeFolder}/${randomFile}`;
+  const imagePath = `${BASE_URL}/images/${typeFolder}/${randomFile}`;
   console.log(`✅ Selected image: ${imagePath}`);
   return imagePath;
 };
