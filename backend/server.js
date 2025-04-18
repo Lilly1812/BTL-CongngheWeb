@@ -13,27 +13,22 @@ import { fileURLToPath } from "url";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const corsOptions = {
-    origin: "http://localhost:5173", // frontend origin
-    methods: ["GET", "POST", "PATCH","PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true, // nếu bạn dùng cookie hoặc muốn cho phép thông tin đăng nhập
-  };
-  
-app.use(cors(corsOptions));
 app.use(express.json());
-app.use("/images", express.static(path.join(__dirname, "images")));
-// Kết nối Database trước khi chạy server
-connectDB();
+
+const _dirname = path.resolve();
 
 app.use("/api/products", productRoutes);
 app.use("/api/carts", cartRoutes);
 app.use("/api/users", userRoutes); 
 app.use("/api/orders", orderRoutes);
 
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(_dirname, "/frontend/dist")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"));
+  });
+}
 app.listen(PORT, () => {
+  connectDB();
     console.log("🚀 Server started at http://localhost:" + PORT);
 });

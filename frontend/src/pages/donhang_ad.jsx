@@ -11,7 +11,7 @@ function DonHangAd() {
 
   useEffect(() => {
     fetchAllOrdersForAdmin();
-  }, []); // ✅ chỉ chạy 1 lần khi component mount
+  }, []); 
 
   const filteredOrders = orders.filter((order) => {
     if (filter === "confirm") return order.status === "Chờ xác nhận";
