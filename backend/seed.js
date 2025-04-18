@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { faker } from "@faker-js/faker";
 import Product from "./model/product.model.js";
+
 dotenv.config({ path: '../.env' });
 
 console.log("🔹 MONGO_URI:", process.env.MONGO_URI);
@@ -84,12 +85,14 @@ const getRandomImageFromFolder = (typeFolder) => {
 
   const randomFile = files[Math.floor(Math.random() * files.length)];
 
+  // Lấy BASE_URL từ biến môi trường và sử dụng nếu trên production
+  const baseURL = process.env.NODE_ENV === "production" ? process.env.BASE_URL : "http://localhost:5000";
+  
   // ❗ Thay đường dẫn tương đối bằng URL đầy đủ
-  const imagePath = `http://localhost:5000/images/${typeFolder}/${randomFile}`;
+  const imagePath = `${baseURL}/images/${typeFolder}/${randomFile}`;
   console.log(`✅ Selected image: ${imagePath}`);
   return imagePath;
 };
-
 
 // Tạo danh sách sản phẩm giả
 const generateFakeProducts = (num) => {
@@ -118,7 +121,6 @@ const generateFakeProducts = (num) => {
     };
   });
 };
-
 
 // Seed dữ liệu
 const seedProducts = async () => {

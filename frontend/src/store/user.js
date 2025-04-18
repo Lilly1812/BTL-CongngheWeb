@@ -2,14 +2,14 @@ import { create } from "zustand";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-
+const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
 export const useUserStore = create((set) => ({
   user: JSON.parse(localStorage.getItem("user")) || null,
   
   // Đăng nhập
   login: async (email, password) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/users/login", {
+      const res = await axios.post("${BASE_URL}/api/users/login", {
         email,
         password,
       });
@@ -32,7 +32,7 @@ export const useUserStore = create((set) => ({
   // Đăng ký
   register: async (name, email, password) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/users/register", {
+      const res = await axios.post("${BASE_URL}/api/users/register", {
         name,
         email,
         password,
@@ -58,7 +58,7 @@ export const useUserStore = create((set) => ({
       if (!token) return;
   
       // Gửi yêu cầu logout
-      await axios.post("http://localhost:5000/api/users/logout", {}, {
+      await axios.post("${BASE_URL}/api/users/logout", {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -84,7 +84,7 @@ export const useUserStore = create((set) => ({
     if (!token) return;
   
     try {
-      const res = await axios.get("http://localhost:5000/api/users/me", {
+      const res = await axios.get("${BASE_URL}/api/users/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -106,7 +106,7 @@ export const useUserStore = create((set) => ({
   // Lấy danh sách người dùng
   fetchAllUsers: async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/users");
+      const res = await axios.get("${BASE_URL}/api/users");
       return {
         success: true,
         data: res.data.data,
@@ -143,7 +143,7 @@ export const useUserStore = create((set) => ({
       }
 
       const res = await axios.post(
-        "http://localhost:5000/api/users/update-role",
+        "${BASE_URL}/api/users/update-role",
         { userId, newRole: role },
         {
           headers: {

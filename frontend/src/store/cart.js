@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
 export const useCartStore = create((set, get) => ({
   cart: [],
 
@@ -7,7 +8,7 @@ export const useCartStore = create((set, get) => ({
     try {
       const token = localStorage.getItem("token");
       console.log("token", token);
-      const res = await axios.get("http://localhost:5000/api/carts/me", {
+      const res = await axios.get("${BASE_URL}/api/carts/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -39,7 +40,7 @@ export const useCartStore = create((set, get) => ({
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:5000/api/carts/add",
+        "${BASE_URL}/api/carts/add",
         { productId, quantity },
         {
           headers: {
@@ -57,7 +58,7 @@ export const useCartStore = create((set, get) => ({
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:5000/api/carts/remove",
+        "${BASE_URL}/api/carts/remove",
         { productIds }, // 🟡 Kiểm tra xem productIds có phải là mảng hợp lệ
         {
           headers: {
@@ -74,7 +75,7 @@ export const useCartStore = create((set, get) => ({
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:5000/api/carts/update",
+        "${BASE_URL}/api/carts/update",
         { productId, quantity },
         {
           headers: {

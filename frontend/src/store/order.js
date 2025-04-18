@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
-
+const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
 export const useOrderStore = create((set, get) => ({
   orders: [],
   selectedOrder: null,
@@ -9,7 +9,7 @@ export const useOrderStore = create((set, get) => ({
   fetchOrders: async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/orders/me", {
+      const res = await axios.get("${BASE_URL}/api/orders/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -49,7 +49,7 @@ export const useOrderStore = create((set, get) => ({
   fetchAllOrdersForAdmin: async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.get(`http://localhost:5000/api/orders/admin/all`, {
+      const res = await axios.get(`${BASE_URL}/api/orders/admin/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       set({ orders: res.data });
@@ -62,7 +62,7 @@ export const useOrderStore = create((set, get) => ({
   // Tạo đơn hàng
   createOrder: async (orderData, token) => {
     try {
-      const res = await axios.post(`http://localhost:5000/api/orders`, orderData, {
+      const res = await axios.post(`${BASE_URL}/api/orders`, orderData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return res.data;
@@ -78,7 +78,7 @@ export const useOrderStore = create((set, get) => ({
     const token = localStorage.getItem("token");
     try {
       const res = await axios.patch(
-        `http://localhost:5000/api/orders/cancel/${orderId}`,
+        `${BASE_URL}/api/orders/cancel/${orderId}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -97,7 +97,7 @@ export const useOrderStore = create((set, get) => ({
     const token = localStorage.getItem("token");
     try {
       const res = await axios.patch(
-        `http://localhost:5000/api/orders/change-status/${orderId}`,
+        `${BASE_URL}/api/orders/change-status/${orderId}`,
         { targetStatus },
         {
           headers: { Authorization: `Bearer ${token}` },
