@@ -22,8 +22,9 @@
   "description": "",
   "dependencies": {
     "@faker-js/faker": "^9.6.0",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
@@ -31,7 +32,6 @@
     "jwt-decode": "^4.0.0",
     "mongoose": "^8.13.1",
     "sweetalert2": "^11.17.2",
-    "cross-env": "^7.0.3",
     "ws": "^8.18.1"
   },
   "devDependencies": {
