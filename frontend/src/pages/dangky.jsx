@@ -42,6 +42,13 @@ export default function DangKy() {
 
       {/* Right form */}
       <div className="flex flex-col justify-center px-8 py-12">
+        <h1
+          onClick={() => navigate("/")}
+          className="text-3xl font-bold mb-4 text-center cursor-pointer text-gray-800 hover:text-gray-600 transition"
+        >
+          Brick & Beam
+        </h1>
+
         <h2 className="text-2xl font-semibold mb-6 text-center">Đăng ký</h2>
         {error && (
           <p className="text-red-500 text-sm mb-4 text-center">{error}</p>

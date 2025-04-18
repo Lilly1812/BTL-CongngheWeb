@@ -26,7 +26,7 @@ export default function DangNhap() {
     }
 
     setLoading(true);
-    setError("");  // Clear previous error
+    setError(""); // Clear previous error
 
     const res = await login(form.email, form.password);
 
@@ -41,7 +41,7 @@ export default function DangNhap() {
       toast.error(res.message || "Đăng nhập thất bại.");
       setError(res.message);
     }
-    
+
     setLoading(false);
   };
 
@@ -58,8 +58,16 @@ export default function DangNhap() {
 
       {/* Right form */}
       <div className="flex flex-col justify-center px-8 py-12">
+        <h1
+          onClick={() => navigate("/")}
+          className="text-3xl font-bold mb-4 text-center cursor-pointer text-gray-800 hover:text-gray-600 transition"
+        >
+          Brick & Beam
+        </h1>
         <h2 className="text-2xl font-semibold mb-6 text-center">Đăng nhập</h2>
-        {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             name="email"
@@ -79,7 +87,11 @@ export default function DangNhap() {
           />
           <button
             type="submit"
-            className={`w-full py-2 rounded ${loading ? "bg-gray-400" : "bg-gray-800 text-white hover:bg-gray-700"}`}
+            className={`w-full py-2 rounded ${
+              loading
+                ? "bg-gray-400"
+                : "bg-gray-800 text-white hover:bg-gray-700"
+            }`}
             disabled={loading}
           >
             {loading ? "Đang đăng nhập..." : "Đăng nhập"}
