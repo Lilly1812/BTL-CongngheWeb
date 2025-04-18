@@ -82,7 +82,7 @@ function DonHangAd() {
                       const newStatus = e.target.value;
                       try {
                         await changeOrderStatus({
-                          orderId: order._id,
+                          orderId: order.orderId,
                           targetStatus: newStatus,
                         });
                         await fetchAllOrdersForAdmin();

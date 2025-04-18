@@ -53,7 +53,10 @@ function DonHang() {
               status={order.status}
               createdAt={order.createdAt}
               address={order.shippingAddress}
-              onCancel={() => cancelOrder(order._id)}
+              onCancel={() => {
+                console.log("order._id khi hủy:", order.orderId);
+                cancelOrder(order.orderId);
+              }}
             />
           ))
         ) : (

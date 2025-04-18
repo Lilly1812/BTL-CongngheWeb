@@ -24,10 +24,10 @@ export const useOrderStore = create((set, get) => ({
       }
   
       const orders = ordersData.map((order) => ({
-        id: order._id,
+        orderId: order.orderId,
         status: order.status,
         createdAt: order.createdAt,
-        totalPrice: order.totalPrice,
+        total: order.total,
         items: order.items.map((item) => ({
           title: item.productId.name,
           price: item.productId.price,
@@ -59,19 +59,6 @@ export const useOrderStore = create((set, get) => ({
     }
   },
 
-  // Lấy đơn hàng theo ID
-  fetchOrderById: async (orderId, token) => {
-    try {
-      const res = await axios.get(`http://localhost:5000/api/orders/${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      set({ selectedOrder: res.data });
-    } catch (err) {
-      console.error("Lỗi khi lấy chi tiết đơn hàng:", err);
-      set({ selectedOrder: null });
-    }
-  },
-
   // Tạo đơn hàng
   createOrder: async (orderData, token) => {
     try {
@@ -87,7 +74,8 @@ export const useOrderStore = create((set, get) => ({
 
 
   // Hủy đơn hàng
-  cancelOrder: async (orderId, token) => {
+  cancelOrder: async (orderId) => {
+    const token = localStorage.getItem("token");
     try {
       const res = await axios.patch(
         `http://localhost:5000/api/orders/cancel/${orderId}`,
@@ -96,6 +84,7 @@ export const useOrderStore = create((set, get) => ({
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      await get().fetchOrders();
       return res.data;
     } catch (err) {
       console.error("Lỗi khi hủy đơn hàng:", err);
@@ -116,7 +105,16 @@ export const useOrderStore = create((set, get) => ({
       );
       return res.data;
     } catch (err) {
-      console.error("Lỗi khi thay đổi trạng thái đơn hàng:", err);
+      if (err.response) {
+        // Server responded with a status code other than 2xx
+        console.error("Error Response:", err.response.data);
+      } else if (err.request) {
+        // Request was made but no response was received
+        console.error("No response received:", err.request);
+      } else {
+        // Something else triggered the error
+        console.error("Error", err.message);
+      }
       throw err;
     }
   },

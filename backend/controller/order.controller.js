@@ -45,28 +45,6 @@ export const getAllOrders = async (req, res) => {
 };
 
 
-// 📄 Chi tiết đơn hàng theo ID
-export const getOrderById = async (req, res) => {
-  const { orderId } = req.params;
-
-  try {
-    if (!mongoose.Types.ObjectId.isValid(orderId)) {
-      return res.status(400).json({ message: "ID đơn hàng không hợp lệ." });
-    }
-
-    const order = await Order.findById(orderId).populate("items.productId").populate("userId");;
-
-    if (!order) {
-      return res.status(404).json({ message: "Không tìm thấy đơn hàng." });
-    }
-
-    res.status(200).json(order);
-  } catch (error) {
-    console.error("❌ Lỗi khi lấy chi tiết đơn hàng:", error.message);
-    res.status(500).json({ message: "Lỗi máy chủ." });
-  }
-};
-
 // ➕ Tạo đơn hàng mới
 export const createOrder = async (req, res) => {
   const { orderId, items, shippingAddress, paymentMethod, total } = req.body;
@@ -89,43 +67,14 @@ export const createOrder = async (req, res) => {
   }
 };
 
-// 🔄 Cập nhật trạng thái đơn hàng
-export const updateOrderStatus = async (req, res) => {
-  const { orderId } = req.params;
-  const { status } = req.body;
-
-  try {
-    if (!mongoose.Types.ObjectId.isValid(orderId)) {
-      return res.status(400).json({ message: "ID đơn hàng không hợp lệ." });
-    }
-
-    const updatedOrder = await Order.findByIdAndUpdate(
-      orderId,
-      { status },
-      { new: true }
-    );
-
-    if (!updatedOrder) {
-      return res.status(404).json({ message: "Không tìm thấy đơn hàng." });
-    }
-
-    res.status(200).json(updatedOrder);
-  } catch (error) {
-    console.error("❌ Lỗi khi cập nhật trạng thái đơn hàng:", error.message);
-    res.status(500).json({ message: "Lỗi máy chủ." });
-  }
-};
 
 // ❌ Yêu cầu hủy đơn hàng
 export const cancelOrder = async (req, res) => {
   const { orderId } = req.params;
 
   try {
-    if (!mongoose.Types.ObjectId.isValid(orderId)) {
-      return res.status(400).json({ message: "ID đơn hàng không hợp lệ." });
-    }
 
-    const order = await Order.findById(orderId);
+    const order = await Order.findOne({ orderId: orderId });
 
     if (!order) {
       return res.status(404).json({ message: "Không tìm thấy đơn hàng." });
@@ -158,11 +107,8 @@ export const changeOrderStatus = async (req, res) => {
   };
 
   try {
-    if (!mongoose.Types.ObjectId.isValid(orderId)) {
-      return res.status(400).json({ message: "ID đơn hàng không hợp lệ." });
-    }
 
-    const order = await Order.findById(orderId);
+    const order = await Order.findOne({ orderId: orderId });
     if (!order) return res.status(404).json({ message: "Không tìm thấy đơn hàng." });
 
     const currentStatus = order.status;

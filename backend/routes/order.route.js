@@ -2,7 +2,6 @@ import express from "express";
 import {
   getAllOrdersForAdmin,
   getAllOrders,
-  getOrderById,
   createOrder,
   cancelOrder,
   changeOrderStatus,
@@ -13,7 +12,6 @@ const router = express.Router();
 
 router.get("/admin/all", protect, getAllOrdersForAdmin); // chỉ admin mới nên được dùng
 router.get("/me", protect, getAllOrders); // user tự lấy order của mình
-router.get("/detail/:orderId", protect, getOrderById);
 router.post("/", protect, createOrder);
 router.patch("/cancel/:orderId", protect, cancelOrder);
 router.patch("/change-status/:orderId", protect, changeOrderStatus);
