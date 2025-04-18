@@ -14,13 +14,16 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json());
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const _dirname = path.resolve();
 
 app.use("/api/products", productRoutes);
 app.use("/api/carts", cartRoutes);
 app.use("/api/users", userRoutes); 
 app.use("/api/orders", orderRoutes);
+
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(_dirname, "/frontend/dist")));
