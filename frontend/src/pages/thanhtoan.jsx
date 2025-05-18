@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useOrderStore } from "../store/order";
 import { useUserStore } from "../store/user";
+import { useCartStore } from "../store/cart";
 
 function ThanhToan() {
   const { state } = useLocation();
   const selectedItems = state?.selectedItems || [];
   const total = state?.total || 0;
   const { createOrder } = useOrderStore();
+  const { removeSelected } = useCartStore();
   const { user } = useUserStore();
   const navigate = useNavigate();
 
@@ -75,45 +77,54 @@ function ThanhToan() {
     });
   
     if (result.isConfirmed) {
-      const newOrder = {
-        items: selectedItems,
-        total: finalTotal,
-        shippingAddress: {
-          detail: detailAddress,
-          ward: selectedWard.name,
-          district: selectedDistrict.name,
-          province: selectedProvince.name,
-        },
-        paymentMethod,
-        status: paymentMethod === "COD" ? "Chờ xác nhận" : "Chờ chuyển khoản",
-      };
-  
-      const token = localStorage.getItem("token"); // hoặc từ auth store
-      const response = await createOrder(newOrder, token);
-      setOrderId(response.orderId);
-  
-      if (paymentMethod === "Chuyển khoản ngân hàng") {
-        Swal.fire({
-          title: "Quét mã để thanh toán",
-          html: `
-            <div style="display: flex; flex-direction: column; align-items: center;">
-              <img src="https://img.vietqr.io/image/${bankCode}-${accountNumber}-qr_only.png?amount=${finalTotal}&addInfo=ThanhToan%23${response.orderId}" alt="QR Code" style="width: 200px; height: 200px; margin-bottom: 1rem;" />
-              <div style="text-align: left; font-size: 14px;">
-                <p><strong>Mã đơn hàng:</strong> ${response.orderId}</p>
-                <p><strong>Số tiền:</strong> ${finalTotal.toLocaleString()} VND</p>
-                <p><strong>Ghi chú chuyển khoản:</strong> ThanhToan#${response.orderId}</p>
+      try {
+        const newOrder = {
+          items: selectedItems,
+          total: finalTotal,
+          shippingAddress: {
+            detail: detailAddress,
+            ward: selectedWard.name,
+            district: selectedDistrict.name,
+            province: selectedProvince.name,
+          },
+          paymentMethod,
+          status: paymentMethod === "COD" ? "Chờ xác nhận" : "Chờ chuyển khoản",
+        };
+    
+        const token = localStorage.getItem("token");
+        const response = await createOrder(newOrder, token);
+        setOrderId(response.orderId);
+
+        // Remove ordered items from cart
+        const productIds = selectedItems.map(item => item.productId);
+        await removeSelected({ productIds });
+    
+        if (paymentMethod === "Chuyển khoản ngân hàng") {
+          Swal.fire({
+            title: "Quét mã để thanh toán",
+            html: `
+              <div style="display: flex; flex-direction: column; align-items: center;">
+                <img src="https://img.vietqr.io/image/${bankCode}-${accountNumber}-qr_only.png?amount=${finalTotal}&addInfo=ThanhToan%23${response.orderId}" alt="QR Code" style="width: 200px; height: 200px; margin-bottom: 1rem;" />
+                <div style="text-align: left; font-size: 14px;">
+                  <p><strong>Mã đơn hàng:</strong> ${response.orderId}</p>
+                  <p><strong>Số tiền:</strong> ${finalTotal.toLocaleString()} VND</p>
+                  <p><strong>Ghi chú chuyển khoản:</strong> ThanhToan#${response.orderId}</p>
+                </div>
               </div>
-            </div>
-          `,
-          confirmButtonText: "Hoàn thành",
-        }).then(() => navigate("/"));
-      } else {
-        Swal.fire({
-          title: "Đặt hàng thành công",
-          text: "Đơn hàng của bạn đã được tạo. Cảm ơn bạn!",
-          icon: "success",
-          confirmButtonText: "Xem sản phẩm",
-        }).then(() => navigate("/"));
+            `,
+            confirmButtonText: "Hoàn thành",
+          }).then(() => navigate("/"));
+        } else {
+          Swal.fire({
+            title: "Đặt hàng thành công",
+            text: "Đơn hàng của bạn đã được tạo. Cảm ơn bạn!",
+            icon: "success",
+            confirmButtonText: "Xem sản phẩm",
+          }).then(() => navigate("/"));
+        }
+      } catch (error) {
+        console.error("Lỗi khi tạo đơn hàng:", error);
+        Swal.fire("Lỗi", "Không thể tạo đơn hàng. Vui lòng thử lại sau.", "error");
       }
     }
   };

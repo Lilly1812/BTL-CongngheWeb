@@ -1,6 +1,7 @@
 import Order from "../model/order.model.js";
 import mongoose from "mongoose";
-
+import dotenv from 'dotenv';
+dotenv.config();
 // 🧾 Lấy tất cả đơn hàng - chỉ Admin
 export const getAllOrdersForAdmin = async (req, res) => {
   try {
@@ -44,12 +45,14 @@ export const getAllOrders = async (req, res) => {
   }
 };
 
-
 // ➕ Tạo đơn hàng mới
 export const createOrder = async (req, res) => {
-  const { orderId, items, shippingAddress, paymentMethod, total } = req.body;
+  const { items, shippingAddress, paymentMethod, total } = req.body;
 
   try {
+    // Generate a unique order ID
+    const orderId = 'ORD' + Date.now().toString().slice(-8);
+
     const newOrder = new Order({
       orderId,
       userId: req.user._id,
@@ -57,9 +60,11 @@ export const createOrder = async (req, res) => {
       shippingAddress,
       paymentMethod,
       total,
+      status: paymentMethod === "COD" ? "Chờ xác nhận" : "Chờ chuyển khoản",
     });
 
     await newOrder.save();
+
     res.status(201).json(newOrder);
   } catch (error) {
     console.error("❌ Lỗi khi tạo đơn hàng:", error.message);

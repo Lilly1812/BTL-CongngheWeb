@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../store/user";
 import anhnen from "../assets/anhnen.webp";
 import { toast } from "react-toastify";
+import { FiUser, FiMail, FiLock, FiArrowRight } from "react-icons/fi";
 
 export default function DangKy() {
   const navigate = useNavigate();
@@ -11,13 +12,24 @@ export default function DangKy() {
 
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setError(""); // Clear error when user types
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!form.name || !form.email || !form.password) {
+      setError("Vui lòng điền đầy đủ thông tin.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
     const res = await register(form.name, form.email, form.password);
 
     if (res.success) {
@@ -27,69 +39,132 @@ export default function DangKy() {
       toast.error(res.message || "Đăng ký thất bại.");
       setError(res.message);
     }
+
+    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
-      {/* Left image */}
-      <div className="hidden md:block">
+    <div className="flex">
+      {/* Left side - Image */}
+      <div className="hidden lg:block lg:w-1/2 relative aspect-square">
         <img
           src={anhnen}
-          alt="Register illustration"
-          className="w-full h-full object-cover"
+          alt="Register background"
+          className="absolute inset-0 w-full h-full object-cover"
         />
+        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+          <div className="text-white text-center">
+            <h1 className="text-4xl font-bold mb-4">Brick & Beam</h1>
+            <p className="text-xl">Chất lượng tạo nên thương hiệu</p>
+          </div>
+        </div>
       </div>
 
-      {/* Right form */}
-      <div className="flex flex-col justify-center px-8 py-12">
-        <h1
-          onClick={() => navigate("/")}
-          className="text-3xl font-bold mb-4 text-center cursor-pointer text-gray-800 hover:text-gray-600 transition"
-        >
-          Brick & Beam
-        </h1>
+      {/* Right side - Registration form */}
+      <div className="w-full lg:w-1/2 aspect-square flex items-center justify-center p-8 bg-gray-50">
+        <div className="w-full max-w-sm space-y-6">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Đăng ký</h2>
+            <p className="text-gray-600">
+              Đã có tài khoản?{" "}
+              <button
+                onClick={() => navigate("/dangnhap")}
+                className="text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Đăng nhập ngay
+              </button>
+            </p>
+          </div>
 
-        <h2 className="text-2xl font-semibold mb-6 text-center">Đăng ký</h2>
-        {error && (
-          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
-        )}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            name="name"
-            placeholder="Họ tên"
-            value={form.name}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded"
-          />
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded"
-          />
-          <input
-            name="password"
-            type="password"
-            placeholder="Mật khẩu"
-            value={form.password}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded"
-          />
-          <button
-            type="submit"
-            className="w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700"
-          >
-            Đăng ký
-          </button>
-        </form>
-        <p className="mt-4 text-sm text-center">
-          Đã có tài khoản?{" "}
-          <a href="/dangnhap" className="text-blue-600 hover:underline">
-            Đăng nhập
-          </a>
-        </p>
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Họ và tên
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FiUser className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Nhập họ và tên của bạn"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FiMail className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Nhập email của bạn"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Mật khẩu
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FiLock className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="password"
+                    name="password"
+                    value={form.password}
+                    onChange={handleChange}
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Tạo mật khẩu"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {error && (
+              <div className="text-red-500 text-sm text-center">{error}</div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex items-center justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  Đăng ký
+                  <FiArrowRight className="ml-2" />
+                </>
+              )}
+            </button>
+
+            <div className="text-center">
+              <button
+                onClick={() => navigate("/")}
+                className="text-gray-600 hover:text-gray-800 text-sm font-medium"
+              >
+                Quay lại trang chủ
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

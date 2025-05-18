@@ -23,7 +23,7 @@ function DonHang() {
         {[
           "Chờ xác nhận",
           "Đã xác nhận",
-          "Đang giao hàng",
+          "Đang giao",
           "Đã giao",
           "Chờ hủy",
           "Đã hủy",
@@ -106,7 +106,7 @@ function CardOrder({
         return "bg-blue-400 text-white";
       case "Đã xác nhận":
         return "bg-yellow-400 text-gray-800";
-      case "Đang giao hàng":
+      case "Đang giao":
         return "bg-orange-400 text-white";
       case "Đã giao":
         return "bg-green-500 text-white";

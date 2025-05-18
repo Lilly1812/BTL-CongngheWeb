@@ -22,7 +22,7 @@ export const getCartByUserId = async (req, res) => {
 };
 export const addToCart = async (req, res) => {
   const { productId, quantity } = req.body;
-  const userId = req.user._id; // ✅ Lấy từ token đã decode
+  const userId = req.user._id; 
 
   try {
     let cart = await Cart.findOne({ user: userId });
